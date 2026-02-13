@@ -1,7 +1,8 @@
 const DocsPage = () => {
   return (
     <div>
-      <p>This is umi docs.</p>
+      <h1>Документация</h1>
+      <p>Тут тоже ничего, оставил в качестве ловушки</p>
     </div>
   );
 };

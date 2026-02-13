@@ -1,15 +1,16 @@
-import yayJpg from '../assets/yay.jpg';
+import React from 'react';
+import { Card, Typography } from 'antd';
+
+const { Title, Paragraph } = Typography;
 
 export default function HomePage() {
   return (
-    <div>
-      <h2>Yay! Welcome to umi!</h2>
-      <p>
-        <img src={yayJpg} width="388" />
-      </p>
-      <p>
-        To get started, edit <code>pages/index.tsx</code> and save to reload.
-      </p>
-    </div>
+    <Card>
+      <Title level={2}>Добро пожаловать в мое приложение!</Title>
+      <Paragraph>
+        <Title level={3}>Это первая страница, созданная с использованием umiJS и Ant Design.</Title>
+        <p>Здесь ничего нет, попробуйте посмотреть раздел "О программе"</p>
+      </Paragraph>
+    </Card>
   );
 }
