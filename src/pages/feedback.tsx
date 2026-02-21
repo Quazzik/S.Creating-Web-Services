@@ -1,4 +1,6 @@
 import { Card, Button, Form, Input, InputNumber } from 'antd';
+import { useState } from 'react';
+import FeedbackModal from '@/components/FeedbackModal';
 
 const layout = {
   labelCol: { span: 8 },
@@ -6,21 +8,22 @@ const layout = {
 };
 
 const validateMessages = {
-  required: '${label} is required!',
+  required: 'Поле "${label}" необходимо  заполнить!',
   types: {
-    email: '${label} is not a valid email!',
-    number: '${label} is not a valid number!',
+    email: 'Такая ${label} не может существовать!',
   },
-  number: {
-    range: '${label} must be between ${min} and ${max}',
-  },
-};
-
-const onFinish = (values: any) => {
-  console.log(values);
 };
 
 export default function Feedback() {
+  const [visible, setVisible] = useState(false);
+  const [submittedData, setSubmittedData] = useState(null);
+
+  const onFinish = (values: any) => {
+    console.log('onFinish called', values);
+    setSubmittedData(values);
+    setVisible(true);
+  };
+
   return (
     <div>
         <Card>
@@ -49,5 +52,8 @@ export default function Feedback() {
       </Button>
     </Form.Item>
   </Form>
+        <FeedbackModal open={visible} onClose={() => setVisible(false)} data={submittedData} />
         </Card>
     </div>)}
+
+
