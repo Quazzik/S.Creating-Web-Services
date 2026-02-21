@@ -15,3 +15,11 @@ export const showDeleteNotification = (dictionaryName: string, itemName: string,
     duration: 4,
   });
 };
+
+export const showEditNotification = (dictionaryName: string, oldName: string, newName: string) => {
+  notification.info({
+    message: 'Элемент изменён',
+    description: `В ${dictionaryName} элемент "${oldName}" изменён на "${newName}"`,
+    duration: 4,
+  });
+};

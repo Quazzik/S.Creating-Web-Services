@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Input, Button, Space, Typography } from 'antd';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-import { showAddNotification, showDeleteNotification } from '../utils/notifications';
+import { Card, Table, Input, Button, Space, Typography, Modal, Popconfirm } from 'antd';
+import { DeleteOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
+import { showAddNotification, showDeleteNotification, showEditNotification } from '../utils/notifications';
 
 const { Title } = Typography;
 
 interface Item {
   id: number;
   name: string;
+  isCarBrand?: boolean;
 }
 
 export default function DictionariesPage() {
@@ -15,6 +16,9 @@ export default function DictionariesPage() {
   const [comfortLevels, setComfortLevels] = useState<Item[]>([]);
   const [newCarBrand, setNewCarBrand] = useState('');
   const [newComfortLevel, setNewComfortLevel] = useState('');
+  const [editingItem, setEditingItem] = useState<Item | null>(null);
+  const [editingValue, setEditingValue] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     console.log(`Количество автобрендов: ${carBrands.length}`);
@@ -60,6 +64,35 @@ export default function DictionariesPage() {
     }
   };
 
+  const openEditModal = (item: Item, isCarBrand: boolean) => {
+    setEditingItem({ ...item, isCarBrand });
+    setEditingValue(item.name);
+    setIsModalVisible(true);
+  };
+
+  const handleEditSave = () => {
+    if (editingItem && editingValue.trim()) {
+      const oldName = editingItem.name;
+      const updatedItem = { ...editingItem, name: editingValue.trim() };
+      if (editingItem.isCarBrand) {
+        setCarBrands(carBrands.map(b => b.id === editingItem.id ? updatedItem : b));
+        showEditNotification('справочнике автобрендов', oldName, updatedItem.name);
+      } else {
+        setComfortLevels(comfortLevels.map(l => l.id === editingItem.id ? updatedItem : l));
+        showEditNotification('справочнике уровней комфорта', oldName, updatedItem.name);
+      }
+      setIsModalVisible(false);
+      setEditingItem(null);
+      setEditingValue('');
+    }
+  };
+
+  const handleEditCancel = () => {
+    setIsModalVisible(false);
+    setEditingItem(null);
+    setEditingValue('');
+  };
+
   const carBrandColumns = [
     {
       title: 'ID',
@@ -75,14 +108,30 @@ export default function DictionariesPage() {
       title: 'Действия',
       key: 'actions',
       render: (_: any, record: Item) => (
-        <Button
-          type="link"
-          danger
-          icon={<DeleteOutlined />}
-          onClick={() => deleteCarBrand(record.id)}
-        >
-          Удалить
-        </Button>
+        <Space>
+          <Button
+            type="link"
+            icon={<EditOutlined />}
+            onClick={() => openEditModal(record, true)}
+          >
+            Редактировать
+          </Button>
+          <Popconfirm
+            title="Вы уверены, что хотите удалить этот элемент?"
+            description="Это действие необратимо."
+            onConfirm={() => deleteCarBrand(record.id)}
+            okText="Да"
+            cancelText="Нет"
+          >
+            <Button
+              type="link"
+              danger
+              icon={<DeleteOutlined />}
+            >
+              Удалить
+            </Button>
+          </Popconfirm>
+        </Space>
       ),
     },
   ];
@@ -102,61 +151,96 @@ export default function DictionariesPage() {
       title: 'Действия',
       key: 'actions',
       render: (_: any, record: Item) => (
-        <Button
-          type="link"
-          danger
-          icon={<DeleteOutlined />}
-          onClick={() => deleteComfortLevel(record.id)}
-        >
-          Удалить
-        </Button>
+        <Space>
+          <Button
+            type="link"
+            icon={<EditOutlined />}
+            onClick={() => openEditModal(record, false)}
+          >
+            Редактировать
+          </Button>
+          <Popconfirm
+            title="Вы уверены, что хотите удалить этот элемент?"
+            description="Это действие необратимо."
+            onConfirm={() => deleteComfortLevel(record.id)}
+            okText="Да"
+            cancelText="Нет"
+          >
+            <Button
+              type="link"
+              danger
+              icon={<DeleteOutlined />}
+            >
+              Удалить
+            </Button>
+          </Popconfirm>
+        </Space>
       ),
     },
   ];
 
   return (
-    <div style={{ padding: '20px' }}>
-      <Title level={2}>Редактирование справочников</Title>
+    <>
+      <div style={{ padding: '20px' }}>
+        <Title level={2}>Редактирование справочников</Title>
 
-      <Card title="Список автобрендов" style={{ marginBottom: '20px' }}>
-        <Space style={{ marginBottom: '16px' }}>
-          <Input
-            placeholder="Название"
-            value={newCarBrand}
-            onChange={(e) => setNewCarBrand(e.target.value)}
-            onPressEnter={addCarBrand}
+        <Card title="Список автобрендов" style={{ marginBottom: '20px' }}>
+          <Space style={{ marginBottom: '16px' }}>
+            <Input
+              placeholder="Название"
+              value={newCarBrand}
+              onChange={(e) => setNewCarBrand(e.target.value)}
+              onPressEnter={addCarBrand}
+            />
+            <Button type="primary" icon={<PlusOutlined />} onClick={addCarBrand}>
+              Добавить
+            </Button>
+          </Space>
+          <Table
+            columns={carBrandColumns}
+            dataSource={carBrands}
+            rowKey="id"
+            pagination={false}
+            scroll={{ y: 250 }}
           />
-          <Button type="primary" icon={<PlusOutlined />} onClick={addCarBrand}>
-            Добавить
-          </Button>
-        </Space>
-        <Table
-          columns={carBrandColumns}
-          dataSource={carBrands}
-          rowKey="id"
-          pagination={false}
-        />
-      </Card>
+        </Card>
 
-      <Card title="Список уровней комфорта">
-        <Space style={{ marginBottom: '16px' }}>
-          <Input
-            placeholder="Название"
-            value={newComfortLevel}
-            onChange={(e) => setNewComfortLevel(e.target.value)}
-            onPressEnter={addComfortLevel}
+        <Card title="Список уровней комфорта">
+          <Space style={{ marginBottom: '16px' }}>
+            <Input
+              placeholder="Название"
+              value={newComfortLevel}
+              onChange={(e) => setNewComfortLevel(e.target.value)}
+              onPressEnter={addComfortLevel}
+            />
+            <Button type="primary" icon={<PlusOutlined />} onClick={addComfortLevel}>
+              Добавить
+            </Button>
+          </Space>
+          <Table
+            columns={comfortLevelColumns}
+            dataSource={comfortLevels}
+            rowKey="id"
+            pagination={false}
+            scroll={{ y: 250 }}
           />
-          <Button type="primary" icon={<PlusOutlined />} onClick={addComfortLevel}>
-            Добавить
-          </Button>
-        </Space>
-        <Table
-          columns={comfortLevelColumns}
-          dataSource={comfortLevels}
-          rowKey="id"
-          pagination={false}
+        </Card>
+      </div>
+      <Modal
+        title="Редактировать элемент"
+        open={isModalVisible}
+        onOk={handleEditSave}
+        onCancel={handleEditCancel}
+        okText="Сохранить"
+        cancelText="Отмена"
+      >
+        <Input
+          placeholder="Название"
+          value={editingValue}
+          onChange={(e) => setEditingValue(e.target.value)}
+          onPressEnter={handleEditSave}
         />
-      </Card>
-    </div>
+      </Modal>
+    </>
   );
 }
