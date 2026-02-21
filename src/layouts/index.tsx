@@ -44,6 +44,11 @@ export default function BasicLayout() {
       icon: <FileTextOutlined />,
       label: <Link to="/docs">Docs</Link>,
     },
+    {
+      key: '4',
+      icon: <FileTextOutlined />,
+      label: <Link to="/feedback">Обратная связь</Link>,
+    },
   ];
 
   return (
