@@ -29,26 +29,30 @@ export default function BasicLayout() {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
+  const createMenuLabel = (text: string) => (
+    <span style={{ whiteSpace: 'normal', wordBreak: 'break-word', lineHeight: '1.6', display: 'block' }}>{text}</span>
+  );
+
   const menuItems = [
     {
       key: '1',
       icon: <HomeOutlined />,
-      label: <Link to="/">Главная</Link>,
+      label: <Link to="/">{createMenuLabel('Главная')}</Link>,
     },
     {
       key: '2',
       icon: <InfoCircleOutlined />,
-      label: <Link to="/about">О программе</Link>,
+      label: <Link to="/about">{createMenuLabel('О программе')}</Link>,
     },
     {
       key: '3',
       icon: <FileTextOutlined />,
-      label: <Link to="/feedback">Обратная связь</Link>,
+      label: <Link to="/feedback">{createMenuLabel('Обратная связь')}</Link>,
     },
     {
       key: '4',
       icon: <DatabaseOutlined />,
-      label: <Link to="/dictionaries">Редактирование справочников</Link>,
+      label: <Link to="/dictionaries">{createMenuLabel('Редактирование справочников')}</Link>,
     },
   ];
 
@@ -76,6 +80,7 @@ export default function BasicLayout() {
           mode="inline"
           defaultSelectedKeys={['1']}
           items={menuItems}
+          className="custom-menu"
         />
       </Sider>
       <Layout>

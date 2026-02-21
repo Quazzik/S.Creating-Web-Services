@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Table, Input, Button, Space, Typography } from 'antd';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { showAddNotification, showDeleteNotification } from '../utils/notifications';
 
 const { Title } = Typography;
 
@@ -26,25 +27,37 @@ export default function DictionariesPage() {
   const addCarBrand = () => {
     if (newCarBrand.trim()) {
       const newId = carBrands.length > 0 ? Math.max(...carBrands.map(b => b.id)) + 1 : 1;
-      setCarBrands([...carBrands, { id: newId, name: newCarBrand.trim() }]);
+      const newBrand = { id: newId, name: newCarBrand.trim() };
+      setCarBrands([...carBrands, newBrand]);
       setNewCarBrand('');
+      showAddNotification('автобрендов', newBrand.name, carBrands.length + 1);
     }
   };
 
   const addComfortLevel = () => {
     if (newComfortLevel.trim()) {
       const newId = comfortLevels.length > 0 ? Math.max(...comfortLevels.map(l => l.id)) + 1 : 1;
-      setComfortLevels([...comfortLevels, { id: newId, name: newComfortLevel.trim() }]);
+      const newLevel = { id: newId, name: newComfortLevel.trim() };
+      setComfortLevels([...comfortLevels, newLevel]);
       setNewComfortLevel('');
+      showAddNotification('уровней комфорта', newLevel.name, comfortLevels.length + 1);
     }
   };
 
   const deleteCarBrand = (id: number) => {
-    setCarBrands(carBrands.filter(b => b.id !== id));
+    const brandToDelete = carBrands.find(b => b.id === id);
+    if (brandToDelete) {
+      setCarBrands(carBrands.filter(b => b.id !== id));
+      showDeleteNotification('автобрендов', brandToDelete.name, carBrands.length - 1);
+    }
   };
 
   const deleteComfortLevel = (id: number) => {
-    setComfortLevels(comfortLevels.filter(l => l.id !== id));
+    const levelToDelete = comfortLevels.find(l => l.id === id);
+    if (levelToDelete) {
+      setComfortLevels(comfortLevels.filter(l => l.id !== id));
+      showDeleteNotification('уровней комфорта', levelToDelete.name, comfortLevels.length - 1);
+    }
   };
 
   const carBrandColumns = [
@@ -108,7 +121,7 @@ export default function DictionariesPage() {
       <Card title="Список автобрендов" style={{ marginBottom: '20px' }}>
         <Space style={{ marginBottom: '16px' }}>
           <Input
-            placeholder="Введите название автобренда"
+            placeholder="Название"
             value={newCarBrand}
             onChange={(e) => setNewCarBrand(e.target.value)}
             onPressEnter={addCarBrand}
@@ -128,7 +141,7 @@ export default function DictionariesPage() {
       <Card title="Список уровней комфорта">
         <Space style={{ marginBottom: '16px' }}>
           <Input
-            placeholder="Введите название уровня комфорта"
+            placeholder="Название"
             value={newComfortLevel}
             onChange={(e) => setNewComfortLevel(e.target.value)}
             onPressEnter={addComfortLevel}

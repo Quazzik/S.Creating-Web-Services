@@ -8,4 +8,8 @@ export default defineConfig({
     { path: "/dictionaries", component: "dictionaries" }
   ],
   npmClient: 'npm',
+  locale: {
+    default: 'ru-RU',
+    antd: true,
+  },
 });
