@@ -9,6 +9,7 @@ import {
   HomeOutlined,
   InfoCircleOutlined,
   FileTextOutlined,
+  DatabaseOutlined,
 } from '@ant-design/icons';
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -42,12 +43,12 @@ export default function BasicLayout() {
     {
       key: '3',
       icon: <FileTextOutlined />,
-      label: <Link to="/docs">Docs</Link>,
+      label: <Link to="/feedback">Обратная связь</Link>,
     },
     {
       key: '4',
-      icon: <FileTextOutlined />,
-      label: <Link to="/feedback">Обратная связь</Link>,
+      icon: <DatabaseOutlined />,
+      label: <Link to="/dictionaries">Редактирование справочников</Link>,
     },
   ];
 
