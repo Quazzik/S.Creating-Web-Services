@@ -54,6 +54,11 @@ export default function BasicLayout() {
       icon: <DatabaseOutlined />,
       label: <Link to="/dictionaries">{createMenuLabel('Редактирование справочников')}</Link>,
     },
+        {
+      key: '5',
+      icon: <DatabaseOutlined />,
+      label: <Link to="/403">{createMenuLabel('Доступ запрещён')}</Link>,
+    },
   ];
 
   return (

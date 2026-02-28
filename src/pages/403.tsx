@@ -8,11 +8,15 @@ const { Title, Paragraph } = Typography;
 export default function Error403Page() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const navigate = useNavigate();
+  const [muted, setMuted] = React.useState(true);
 
   useEffect(() => {
     // Автоматически включаем звук при загрузке страницы
     if (videoRef.current) {
+      // начальное состояние: видео мьютится в верстке, но снимем мута и запустим
       videoRef.current.muted = false;
+      setMuted(false);
+
       videoRef.current.play().catch((error) => {
         console.log('Autoplay заблокирован браузером:', error);
       });
@@ -21,7 +25,9 @@ export default function Error403Page() {
 
   const handleUnmute = () => {
     if (videoRef.current) {
-      videoRef.current.muted = !videoRef.current.muted;
+      const newMuted = !videoRef.current.muted;
+      videoRef.current.muted = newMuted;
+      setMuted(newMuted);
     }
   };
 
@@ -51,7 +57,7 @@ export default function Error403Page() {
               На главную
             </Button>
             <Button size="large" onClick={handleUnmute}>
-              {videoRef.current?.muted ? '🔇 Включить звук' : '🔊 Отключить звук'}
+              {muted ? '🔇 Включить звук' : '🔊 Отключить звук'}
             </Button>
           </Space>
         </Card>
