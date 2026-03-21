@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Card, Typography, Button, Space } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import styles from './403.less';
+import styles from './401.less';
 
 const { Title, Paragraph } = Typography;
 
@@ -40,16 +40,16 @@ export default function Error403Page() {
         muted
         controls={false}
       >
-        <source src="/error-403.mp4" type="video/mp4" />
+        <source src="/error-401.mp4" type="video/mp4" />
         Ваш браузер не поддерживает видео
       </video>
 
       <div className={styles.contentOverlay}>
         <Card className={styles.errorCard}>
-          <Title level={1}>403</Title>
-          <Title level={2}>Доступ запрещен</Title>
+          <Title level={1}>401</Title>
+          <Title level={2}>Unauthorized</Title>
           <Paragraph>
-            К сожалению, у вас нет доступа к этой странице. Пожалуйста, вернитесь на главную страницу.
+            Вы не  авторизованы. Пожалуйста, войдите в аккаунт для доступа к этой странице.
           </Paragraph>
 
           <Space style={{ marginTop: 24, gap: 16 }}>

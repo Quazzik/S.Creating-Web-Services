@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Card, Table, Input, Button, Space, Typography, Modal, Popconfirm } from 'antd';
 import { DeleteOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
 import { showAddNotification, showDeleteNotification, showEditNotification } from '../utils/notifications';
-import { AuthModal } from '../components/AuthModal';
 import { authService } from '../services/auth';
+import { useNavigate } from 'react-router-dom';
 
 const { Title } = Typography;
 
@@ -14,6 +14,9 @@ interface Item {
 }
 
 export default function DictionariesPage() {
+
+  const navigate = useNavigate();
+
   const [carBrands, setCarBrands] = useState<Item[]>([]);
   const [comfortLevels, setComfortLevels] = useState<Item[]>([]);
   const [newCarBrand, setNewCarBrand] = useState('');
@@ -21,14 +24,11 @@ export default function DictionariesPage() {
   const [editingItem, setEditingItem] = useState<Item | null>(null);
   const [editingValue, setEditingValue] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isAuthModalVisible, setIsAuthModalVisible] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const auth = authService.isAuthenticated();
-    setIsAuthenticated(auth);
     if (!auth) {
-      setIsAuthModalVisible(true);
+      navigate('/401');
     }
   }, []);
 
@@ -103,11 +103,6 @@ export default function DictionariesPage() {
     setIsModalVisible(false);
     setEditingItem(null);
     setEditingValue('');
-  };
-
-  const handleAuthSuccess = () => {
-    setIsAuthenticated(true);
-    setIsAuthModalVisible(false);
   };
 
   const handleAuthCancel = () => {
@@ -263,11 +258,6 @@ export default function DictionariesPage() {
           onPressEnter={handleEditSave}
         />
       </Modal>
-      <AuthModal
-        visible={isAuthModalVisible}
-        onSuccess={handleAuthSuccess}
-        onCancel={handleAuthCancel}
-      />
     </>
   );
 }

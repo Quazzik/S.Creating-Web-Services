@@ -1,16 +1,11 @@
-import React from 'react';
-import {
-  Layout,
-  Menu,
-  theme,
-} from 'antd';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {Button, Layout, Menu, theme} from 'antd';
 import { Link, Outlet } from 'umi';
-import {
-  HomeOutlined,
-  InfoCircleOutlined,
-  FileTextOutlined,
-  DatabaseOutlined,
-} from '@ant-design/icons';
+import {HomeOutlined, InfoCircleOutlined, FileTextOutlined,
+  DatabaseOutlined} from '@ant-design/icons';
+import { authService } from '../services/auth';
+import { AuthModal } from '../components/AuthModal';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -25,6 +20,32 @@ const siderStyle = {
 };
 
 export default function BasicLayout() {
+  const navigate = useNavigate();
+
+  const [isAuthModalVisible, setIsAuthModalVisible] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const handleLogout = () => {
+    authService.logout();
+    setIsAuthenticated(false);
+    navigate('/');
+  };
+
+  const handleLogin = () => {
+    setIsAuthModalVisible(true);
+    navigate('/');
+  };
+
+    const handleAuthSuccess = () => {
+    setIsAuthenticated(true);
+    setIsAuthModalVisible(false);
+  };
+
+  useEffect(() => {
+      const auth = authService.isAuthenticated();
+      setIsAuthenticated(auth);
+    }, []);
+
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -49,15 +70,15 @@ export default function BasicLayout() {
       icon: <FileTextOutlined />,
       label: <Link to="/feedback">{createMenuLabel('Обратная связь')}</Link>,
     },
-    {
+    ...(isAuthenticated ? [{
       key: '4',
       icon: <DatabaseOutlined />,
       label: <Link to="/dictionaries">{createMenuLabel('Редактирование справочников')}</Link>,
-    },
+    }] : []),
         {
       key: '5',
       icon: <DatabaseOutlined />,
-      label: <Link to="/403">{createMenuLabel('Доступ запрещён')}</Link>,
+      label: <Link to="/401">{createMenuLabel('Доступ запрещён')}</Link>,
     },
   ];
 
@@ -77,7 +98,11 @@ export default function BasicLayout() {
             fontWeight: 'bold',
             letterSpacing: 0.5,
           }}>
-    Ваша реклама
+            {isAuthenticated ? <Button size="large" type="primary" onClick={() => handleLogout()}>
+          Выход ({authService.getUser()?.login || 'Noname'})
+        </Button> : <Button size="large" type="primary" onClick={() => handleLogin()}>
+          Войти
+        </Button>}  
   </span>
 </div>
         <Menu
@@ -102,6 +127,10 @@ export default function BasicLayout() {
           </div>
         </Content>
       </Layout>
+      <AuthModal
+              visible={isAuthModalVisible}
+              onSuccess={handleAuthSuccess}
+            />
     </Layout>
   );
 }

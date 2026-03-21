@@ -6,7 +6,7 @@ export default defineConfig({
     { path: "/about", component: "about" },
     { path: "/feedback", component: "feedback" },
     { path: "/dictionaries", component: "dictionaries" },
-    { path: "/403", component: "403" },
+    { path: "/401", component: "401" },
   ],
   npmClient: 'npm',
   locale: {

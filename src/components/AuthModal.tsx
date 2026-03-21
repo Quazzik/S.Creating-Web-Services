@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Form, Input, Button, message, Spin } from 'antd';
 import { authService } from '../services/auth';
+import { useNavigate } from 'react-router-dom';
 
 interface AuthModalProps {
   visible: boolean;
