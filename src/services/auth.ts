@@ -1,3 +1,5 @@
+import { showLoginNotification, showLogoutNotification } from './notificationService';
+
 interface LoginRequest {
   Login: string;
   Password: string;
@@ -37,6 +39,7 @@ export const authService = {
 
     localStorage.setItem(TOKEN_KEY, data.token);
     localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+    showLoginNotification(data.user.login);
 
     return data;
   },
@@ -44,6 +47,7 @@ export const authService = {
   logout(): void {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
+    showLogoutNotification();
   },
 
   getToken(): string | null {
