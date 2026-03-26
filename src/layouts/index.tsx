@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { history } from 'umi';
 import {Button, Layout, Menu, theme} from 'antd';
 import { Link, Outlet } from 'umi';
 import {HomeOutlined, InfoCircleOutlined, FileTextOutlined,
@@ -20,7 +20,6 @@ const siderStyle = {
 };
 
 export default function BasicLayout() {
-  const navigate = useNavigate();
 
   const [isAuthModalVisible, setIsAuthModalVisible] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -28,12 +27,12 @@ export default function BasicLayout() {
   const handleLogout = () => {
     authService.logout();
     setIsAuthenticated(false);
-    navigate('/');
+    history.push('/');
   };
 
   const handleLogin = () => {
     setIsAuthModalVisible(true);
-    navigate('/');
+    history.push('/');
   };
 
     const handleAuthSuccess = () => {

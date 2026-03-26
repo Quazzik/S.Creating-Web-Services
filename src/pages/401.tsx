@@ -1,13 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import { Card, Typography, Button, Space } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { history } from 'umi';
 import styles from './401.less';
 
 const { Title, Paragraph } = Typography;
 
 export default function Error403Page() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const navigate = useNavigate();
   const [muted, setMuted] = React.useState(true);
 
   useEffect(() => {
@@ -53,7 +52,7 @@ export default function Error403Page() {
           </Paragraph>
 
           <Space style={{ marginTop: 24, gap: 16 }}>
-            <Button type="primary" size="large" onClick={() => navigate('/')}>
+            <Button type="primary" size="large" onClick={() => history.push('/')}>
               На главную
             </Button>
             <Button size="large" onClick={handleUnmute}>

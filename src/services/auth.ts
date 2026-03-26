@@ -1,4 +1,5 @@
 import { showLoginNotification, showLogoutNotification } from './notificationService';
+import { history } from 'umi';
 
 interface LoginRequest {
   Login: string;
@@ -47,6 +48,7 @@ export const authService = {
   logout(): void {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
+    history.push('/');
     showLogoutNotification();
   },
 

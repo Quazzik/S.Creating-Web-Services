@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Table, Input, Button, Space, Typography, Modal, Popconfirm, message } from 'antd';
 import { DeleteOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
-import { showAddNotification, showDeleteNotification, showEditNotification } from '../services/notificationService';
+import { showAddNotification, showDeleteNotification, showEditNotification, showErrorNotification } from '../services/notificationService';
 import { authService } from '../services/auth';
-import { useNavigate } from 'react-router-dom';
+import { history } from 'umi';
 import { DictionaryItem, carBrandApi, trimLevelApi } from '../services/carDictionaryService';
 
 const { Title } = Typography;
 
 export default function DictionariesPage() {
-  const navigate = useNavigate();
   
   const [carBrands, setCarBrands] = useState<DictionaryItem[]>([]);
   const [trimLevels, setTrimLevels] = useState<DictionaryItem[]>([]);
@@ -27,7 +26,7 @@ export default function DictionariesPage() {
 
   useEffect(() => {
     if (!authService.isAuthenticated()) {
-      navigate('/401');
+      history.push('/401');
       return;
     }
     loadData();
@@ -43,7 +42,7 @@ export default function DictionariesPage() {
       const data = await carBrandApi.getAll();
       setCarBrands(Array.isArray(data) ? data : []);
     } catch (error: any) {
-      message.error(`Ошибка загрузки марок: ${error.message}`);
+      showErrorNotification(error.message, `Ошибка загрузки марок`);
     } finally {
       setLoadingBrands(false);
     }
@@ -55,7 +54,7 @@ export default function DictionariesPage() {
       const data = await trimLevelApi.getAll();
       setTrimLevels(Array.isArray(data) ? data : []);
     } catch (error: any) {
-      message.error(`Ошибка загрузки комплектаций: ${error.message}`);
+      showErrorNotification(error.message, `Ошибка загрузки комплектаций`);
     } finally {
       setLoadingLevels(false);
     }
@@ -69,9 +68,14 @@ export default function DictionariesPage() {
       setCarBrands(prev => [...prev, newBrand]);
       setNewCarBrand('');
       showAddNotification('автобрендов', newBrand.name, carBrands.length + 1);
-      //message.success('Марка добавлена');
+
     } catch (error: any) {
-      message.error(`Ошибка: ${error.message}`);
+      if (error.message.includes('401'))
+      {
+        authService.logout();
+        return;
+      }
+      showErrorNotification(error.message);
     }
   };
 
@@ -82,9 +86,12 @@ export default function DictionariesPage() {
       await carBrandApi.delete(id);
       setCarBrands(prev => prev.filter(b => b.id !== id));
       showDeleteNotification('автобрендов', brand.name, carBrands.length - 1);
-      //message.success('Марка удалена');
     } catch (error: any) {
-      message.error(`Ошибка: ${error.message}`);
+      if (error.message.includes('401')) {
+        authService.logout();
+        return;
+      }
+      showErrorNotification(error.message);
     }
   };
 
@@ -96,9 +103,12 @@ export default function DictionariesPage() {
       setTrimLevels(prev => [...prev, newLevel]);
       setNewTrimLevel('');
       showAddNotification('комплектаций', newLevel.name, trimLevels.length + 1);
-      //message.success('Комплектация добавлена');
     } catch (error: any) {
-      message.error(`Ошибка: ${error.message}`);
+      if (error.message.includes('401')) {
+        authService.logout();
+        return;
+      }
+      showErrorNotification(error.message);
     }
   };
 
@@ -109,9 +119,12 @@ export default function DictionariesPage() {
       await trimLevelApi.delete(id);
       setTrimLevels(prev => prev.filter(l => l.id !== id));
       showDeleteNotification('комплектаций', level.name, trimLevels.length - 1);
-      //message.success('Комплектация удалена');
     } catch (error: any) {
-      message.error(`Ошибка: ${error.message}`);
+      if(error.message.includes('401')) {
+        authService.logout();
+        return;
+      }
+      showErrorNotification(error.message)
     }
   };
 
@@ -135,20 +148,22 @@ export default function DictionariesPage() {
           b.id === editingItem.id ? { ...b, name: newName } : b
         ));
         showEditNotification('справочнике автобрендов', oldName, newName);
-        //message.success('Марка обновлена');
       } else {
         await trimLevelApi.update(editingItem.id, newName);
         setTrimLevels(prev => prev.map(l => 
           l.id === editingItem.id ? { ...l, name: newName } : l
         ));
         showEditNotification('справочнике комплектаций', oldName, newName);
-        //message.success('Комплектация обновлена');
       }
       setIsModalVisible(false);
       setEditingItem(null);
       setEditingValue('');
     } catch (error: any) {
-      message.error(`Ошибка: ${error.message}`);
+      if(error.message.includes('401')) {
+        authService.logout();
+        return;
+      }
+      showErrorNotification(error.message)
     }
   };
 
