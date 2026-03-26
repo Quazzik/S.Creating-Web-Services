@@ -46,7 +46,7 @@ export default function Error403Page() {
 
       <div className={styles.contentOverlay}>
         <Card className={styles.errorCard}>
-          <Title level={1}>403</Title>
+          <Title level={1}>401</Title>
           <Title level={2}>Доступ запрещен</Title>
           <Paragraph>
             К сожалению, у вас нет доступа к этой странице. Пожалуйста, вернитесь на главную страницу.

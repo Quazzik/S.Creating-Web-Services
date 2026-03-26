@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, Table, Input, Button, Space, Typography, Modal, Popconfirm } from 'antd';
 import { DeleteOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
-import { showAddNotification, showDeleteNotification, showEditNotification } from '../utils/notifications';
+import { showAddNotification, showDeleteNotification, showEditNotification } from '../services/notificationService';
 
 const { Title } = Typography;
 

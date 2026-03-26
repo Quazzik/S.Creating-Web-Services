@@ -23,3 +23,25 @@ export const showEditNotification = (dictionaryName: string, oldName: string, ne
     duration: 4,
   });
 };
+
+export const showLogoutNotification = () => {
+  notification.info({
+    message: 'Сессия завершена. Пожалуйста, войдите снова.',
+    duration: 4,
+  });
+};
+
+export const showLoginNotification = (username: any) => {
+  notification.success({
+    message: `Добро пожаловать, ${username}!`,
+    duration: 4,
+  });
+};
+
+export const showErrorNotification = (error: string, withMessage: string | null = "Ошибка") => {
+  notification.error({
+    message: withMessage,
+    description: error,
+    duration: 4,
+  });
+};
