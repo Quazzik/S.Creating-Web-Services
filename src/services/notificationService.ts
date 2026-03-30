@@ -24,6 +24,30 @@ export const showEditNotification = (dictionaryName: string, oldName: string, ne
   });
 };
 
+export const showCarAddedNotification = (carName: string, brandName: string) => {
+  notification.success({
+    message: 'Автомобиль добавлен',
+    description: `Добавлен: ${carName} (${brandName})`,
+    duration: 4,
+  });
+};
+
+export const showCarDeletedNotification = (carName: string, brandName: string) => {
+  notification.info({
+    message: 'Автомобиль удалён',
+    description: `Удалён: ${carName} (${brandName})`,
+    duration: 4,
+  });
+};
+
+export const showCarEditedNotification = (carName: string, brandName: string, changedField: string, oldValue: string | number, newValue: string | number) => {
+  notification.info({
+    message: 'Автомобиль изменён',
+    description: `${carName} (${brandName}): ${changedField} изменён с "${oldValue}" на "${newValue}"`,
+    duration: 4,
+  });
+};
+
 export const showLogoutNotification = () => {
   notification.info({
     message: 'Сессия завершена. Пожалуйста, войдите снова.',

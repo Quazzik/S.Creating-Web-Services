@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Table, Input, Button, Space, Typography, Modal, Popconfirm, Select, InputNumber } from 'antd';
 import { DeleteOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
-import { showAddNotification, showDeleteNotification, showEditNotification, showErrorNotification } from '../services/notificationService';
+import { showCarAddedNotification, showCarDeletedNotification, showCarEditedNotification, showErrorNotification } from '../services/notificationService';
 import { authService } from '../services/auth';
 import { history } from 'umi';
 import { CarItem, DictionaryItem, carApi, carBrandApi, trimLevelApi } from '../services/carDictionaryService';
@@ -74,6 +74,10 @@ export default function CarsPage() {
     }
   };
 
+  // === Helper functions ===
+  const getBrandName = (id: number) => carBrands.find(b => b.id === id)?.name || '—';
+  const getTrimName = (id: number) => trimLevels.find(t => t.id === id)?.name || '—';
+
   // === Add Car ===
   const addCar = async () => {
     if (!newCar.name.trim() || !newCar.carBrandId || !newCar.trimLevelId) {
@@ -89,7 +93,7 @@ export default function CarsPage() {
       });
       setCars(prev => [...prev, data]);
       setNewCar({ name: '', carBrandId: null, trimLevelId: null, amount: 1 });
-      showAddNotification('автомобилей', data.name, cars.length + 1);
+      showCarAddedNotification(data.name, getBrandName(data.carBrandId));
     } catch (error: any) {
       if (error.message.includes('401')) {
         authService.logout();
@@ -105,7 +109,7 @@ export default function CarsPage() {
     try {
       await carApi.delete(id);
       setCars(prev => prev.filter(c => c.id !== id));
-      showDeleteNotification('автомобилей', car.name, cars.length - 1);
+      showCarDeletedNotification(car.name, getBrandName(car.carBrandId));
     } catch (error: any) {
       if (error.message.includes('401')) {
         authService.logout();
@@ -132,8 +136,8 @@ export default function CarsPage() {
       showErrorNotification('Заполните все поля', 'Ошибка');
       return;
     }
-    const oldName = editingItem.name;
     const newName = editingValue.name.trim();
+    const brandName = getBrandName(editingValue.carBrandId || editingItem.carBrandId);
     
     try {
       await carApi.update(editingItem.id, {
@@ -151,7 +155,28 @@ export default function CarsPage() {
           amount: editingValue.amount 
         } : c
       ));
-      showEditNotification('каталоге автомобилей', oldName, newName);
+
+      // === Show notifications for changed fields ===
+      if (editingItem.name !== newName) {
+        showCarEditedNotification(newName, brandName, 'Название', editingItem.name, newName);
+      }
+
+      if (editingItem.carBrandId !== editingValue.carBrandId) {
+        const oldBrandName = getBrandName(editingItem.carBrandId);
+        const newBrandName = getBrandName(editingValue.carBrandId || editingItem.carBrandId);
+        showCarEditedNotification(newName, brandName, 'Автобренд', oldBrandName, newBrandName);
+      }
+
+      if (editingItem.trimLevelId !== editingValue.trimLevelId) {
+        const oldTrimName = getTrimName(editingItem.trimLevelId);
+        const newTrimName = getTrimName(editingValue.trimLevelId || editingItem.trimLevelId);
+        showCarEditedNotification(newName, brandName, 'Комплектация', oldTrimName, newTrimName);
+      }
+
+      if (editingItem.amount !== editingValue.amount) {
+        showCarEditedNotification(newName, brandName, 'Количество', editingItem.amount, editingValue.amount);
+      }
+
       setIsModalVisible(false);
       setEditingItem(null);
       setEditingValue({ name: '', carBrandId: null, trimLevelId: null, amount: 1 });
@@ -169,10 +194,6 @@ export default function CarsPage() {
     setEditingItem(null);
     setEditingValue({ name: '', carBrandId: null, trimLevelId: null, amount: 1 });
   };
-
-  // === Get display names ===
-  const getBrandName = (id: number) => carBrands.find(b => b.id === id)?.name || '—';
-  const getTrimName = (id: number) => trimLevels.find(t => t.id === id)?.name || '—';
 
   // === Columns ===
   const carColumns = [
