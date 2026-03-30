@@ -176,7 +176,7 @@ export default function DictionariesPage() {
   // === Columns ===
   const carBrandColumns = [
     { title: 'ID', dataIndex: 'id', key: 'id', width: 80 },
-    { title: 'Название', dataIndex: 'name', key: 'name' },
+    { title: 'Название', dataIndex: 'name', key: 'name', width: 300, ellipsis: true },
     {
       title: 'Действия',
       key: 'actions',
@@ -202,7 +202,7 @@ export default function DictionariesPage() {
 
   const trimLevelColumns = [
     { title: 'ID', dataIndex: 'id', key: 'id', width: 80 },
-    { title: 'Название', dataIndex: 'name', key: 'name' },
+    { title: 'Название', dataIndex: 'name', key: 'name', width: 300, ellipsis: true },
     {
       title: 'Действия',
       key: 'actions',
@@ -250,7 +250,7 @@ export default function DictionariesPage() {
             dataSource={carBrands}
             rowKey="id"
             pagination={false}
-            scroll={{ y: 250 }}
+            scroll={{ x: 530, y: 250 }}
             loading={loadingBrands}
           />
         </Card>
@@ -274,7 +274,7 @@ export default function DictionariesPage() {
             dataSource={trimLevels}
             rowKey="id"
             pagination={false}
-            scroll={{ y: 250 }}
+            scroll={{ x: 530, y: 250 }}
             loading={loadingLevels}
           />
         </Card>

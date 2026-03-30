@@ -6,6 +6,14 @@ export interface DictionaryItem {
   name: string;
 }
 
+export interface CarItem {
+  id: number;
+  name: string;
+  carBrandId: number;
+  trimLevelId: number;
+  amount: number;
+}
+
 const API_BASE_URL = 'http://localhost:5212/api';
 
 const getAuthHeaders = (): HeadersInit => {
@@ -76,4 +84,22 @@ export const trimLevelApi = {
   
   delete: (id: number): Promise<void> => 
     request<void>(`/trimlevels/${id}`, 'DELETE'),
+};
+
+// === Cars ===
+export const carApi = {
+  getAll: (): Promise<CarItem[]> => 
+    request<CarItem[]>('/cars', 'GET'),
+  
+  getById: (id: number): Promise<CarItem> => 
+    request<CarItem>(`/cars/${id}`, 'GET'),
+  
+  create: (data: { name: string; carBrandId: number; trimLevelId: number; amount: number }): Promise<CarItem> => 
+    request<CarItem>('/cars', 'POST', data),
+  
+  update: (id: number, data: { name: string; carBrandId: number; trimLevelId: number; amount: number }): Promise<CarItem> => 
+    request<CarItem>(`/cars/${id}`, 'PUT', data),
+  
+  delete: (id: number): Promise<void> => 
+    request<void>(`/cars/${id}`, 'DELETE'),
 };

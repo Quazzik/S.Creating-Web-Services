@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { history } from 'umi';
+import { history, useLocation } from 'umi';
 import {Button, Layout, Menu, theme} from 'antd';
 import { Link, Outlet } from 'umi';
 import {HomeOutlined, InfoCircleOutlined, FileTextOutlined,
-  DatabaseOutlined} from '@ant-design/icons';
+  DatabaseOutlined, ShoppingOutlined} from '@ant-design/icons';
 import { authService } from '../services/auth';
 import { AuthModal } from '../components/AuthModal';
 
@@ -20,7 +20,7 @@ const siderStyle = {
 };
 
 export default function BasicLayout() {
-
+  const location = useLocation();
   const [isAuthModalVisible, setIsAuthModalVisible] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -41,9 +41,9 @@ export default function BasicLayout() {
   };
 
   useEffect(() => {
-      const auth = authService.isAuthenticated();
-      setIsAuthenticated(auth);
-    }, []);
+    const auth = authService.isAuthenticated();
+    setIsAuthenticated(auth);
+  }, [location.pathname]);
 
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -74,11 +74,11 @@ export default function BasicLayout() {
       icon: <DatabaseOutlined />,
       label: <Link to="/dictionaries">{createMenuLabel('Редактирование справочников')}</Link>,
     }] : []),
-        {
+    ...(isAuthenticated ? [{
       key: '5',
-      icon: <DatabaseOutlined />,
-      label: <Link to="/401">{createMenuLabel('Доступ запрещён')}</Link>,
-    },
+      icon: <ShoppingOutlined />,
+      label: <Link to="/cars">{createMenuLabel('Каталог автомобилей')}</Link>,
+    }] : []),
   ];
 
   return (
