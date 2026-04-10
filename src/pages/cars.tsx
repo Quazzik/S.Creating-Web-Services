@@ -5,6 +5,8 @@ import { showCarAddedNotification, showCarDeletedNotification, showCarEditedNoti
 import { authService } from '../services/auth';
 import { history } from 'umi';
 import { CarItem, DictionaryItem, carApi, carBrandApi, trimLevelApi } from '../services/carDictionaryService';
+import BrandPieChart from '../components/BrandPieChart';
+import TrimBarChart from '../components/TrimBarChart';
 
 const { Title } = Typography;
 
@@ -246,7 +248,6 @@ export default function CarsPage() {
     <>
       <div style={{ padding: '20px' }}>
         <Title level={2}>Каталог автомобилей</Title>
-        
         <Card title="Список автомобилей" style={{ marginBottom: '20px' }}>
           <Space style={{ marginBottom: '16px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             <Input
@@ -290,6 +291,10 @@ export default function CarsPage() {
             loading={loading}
           />
         </Card>
+          <div style={{ display: 'flex', gap: '16px', marginBottom: '20px', flexWrap: 'wrap' }}>
+            <BrandPieChart cars={cars} carBrands={carBrands} />
+            <TrimBarChart cars={cars} trimLevels={trimLevels} />
+          </div>
       </div>
 
       <Modal
