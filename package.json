@@ -16,6 +16,7 @@
   "dependencies": {
     "@umijs/max": "^4.6.28",
     "antd": "^6.3.0",
-    "@ant-design/plots": "^2.5.34"
+    "@ant-design/plots": "^2.6.8",
+    "xlsx": "^0.18.5"
   }
 }

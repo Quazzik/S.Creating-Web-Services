@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Table, Input, Button, Space, Typography, Modal, Popconfirm, Select, InputNumber } from 'antd';
-import { DeleteOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
+import { DeleteOutlined, PlusOutlined, EditOutlined, FileExcelOutlined } from '@ant-design/icons';
+import * as XLSX from 'xlsx';
 import { showCarAddedNotification, showCarDeletedNotification, showCarEditedNotification, showErrorNotification } from '../services/notificationService';
 import { authService } from '../services/auth';
 import { history } from 'umi';
@@ -79,6 +80,20 @@ export default function CarsPage() {
   // === Helper functions ===
   const getBrandName = (id: number) => carBrands.find(b => b.id === id)?.name || '—';
   const getTrimName = (id: number) => trimLevels.find(t => t.id === id)?.name || '—';
+
+  const exportToExcel = () => {
+    const rows = cars.map((car) => ({
+      Название: car.name,
+      Марка: getBrandName(car.carBrandId),
+      Комплектация: getTrimName(car.trimLevelId),
+      Количество: car.amount,
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Автомобили');
+    XLSX.writeFile(workbook, 'cars.xlsx');
+  };
 
   // === Add Car ===
   const addCar = async () => {
@@ -248,7 +263,15 @@ export default function CarsPage() {
     <>
       <div style={{ padding: '20px' }}>
         <Title level={2}>Каталог автомобилей</Title>
-        <Card title="Список автомобилей" style={{ marginBottom: '20px' }}>
+        <Card
+          title="Список автомобилей"
+          extra={
+            <Button type="primary" icon={<FileExcelOutlined />} onClick={exportToExcel}>
+              Сохранить в Excel
+            </Button>
+          }
+          style={{ marginBottom: '20px' }}
+        >
           <Space style={{ marginBottom: '16px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             <Input
               placeholder="Название"
