@@ -1,0 +1,14 @@
+services:
+  carsweb:
+    container_name: Car-Web-UI
+    restart: always
+    build: .
+    ports:
+      - "127.0.0.1:5305:80"
+    networks:
+      - carnet
+
+networks:
+  carnet:
+    name: carnet
+    external: true
